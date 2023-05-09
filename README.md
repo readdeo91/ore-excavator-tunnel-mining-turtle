@@ -7,6 +7,7 @@ I didn't like the idea to excavate large areas to find resources. The main purpo
 - Mines ore in the walls end every ore connected to it
 - Falling block proof
 - Returns to the starting point
+- Unloads inventory when returned. Chest must be behind or above the starting point.
 
 ### Planned features:
 - Refuel from lava before moving into it
@@ -14,7 +15,6 @@ I didn't like the idea to excavate large areas to find resources. The main purpo
 - Refuel from lava before placing a block on it
 - Fill in a 3 wide walkway when there is no block on the tunnel's floor
 - Maybe 1 block high cobblestone corridor for the walkway
-- Put content to chests after return
 - Auto return when inventory is full, unload and continue mining
 
 This was a proof of concept job. Also heavy refactoring and optimization is needed. The turtle currently moves around a lot when it looks for ore. Especially on the way back.
