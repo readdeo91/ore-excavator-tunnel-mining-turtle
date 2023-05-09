@@ -535,7 +535,6 @@ function mineTunnelFor(argDigDistance)
     miner:mine3x3()
     if invFull then
       unloadIfFull()
-      argDigDistance = argDigDistance + 1
     end
     if i % 2 == 0 then
       throwOutTrash()
