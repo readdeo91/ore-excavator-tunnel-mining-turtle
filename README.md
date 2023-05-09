@@ -10,11 +10,12 @@ I didn't like the idea to excavate large areas to find resources. The main purpo
 - Unloads inventory when returned. Chest must be behind or above the starting point.
 - Throws out trash every second turn
 - Fills in a 3 wide walkway when there is no block on the tunnel's floor and side on the bottom level
+- Auto return when inventory is full, unload and continue mining
 
 ### Planned features:
 - Refuel from lava before moving into it
 - Make a wall to prevents liquids flowing in
 - Refuel from lava before placing a block on it
-- Auto return when inventory is full, unload and continue mining
+
 
 This was a proof of concept job. Also heavy refactoring and optimization is needed. The turtle currently moves around a lot when it looks for ore. Especially on the way back.
