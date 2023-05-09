@@ -284,54 +284,80 @@ function mineIfOreAbove()
   end
 end
 
-function MineTunnel:mine3x3()
+function mineAndGoBottomMiddle()
   turtle.dig()
   goForwardSafe()
   forwardSteps = forwardSteps + 1
   mineIfOreBelow()
-  
   turtle.digUp()
-  
+end
+
+function mineAndGoBottomRight()
   turtle.turnRight()
   turtle.dig()
-
   goForwardSafe()
   mineIfOreBelow()
-  turtle.digUp()
   mineIfOreInFront()
+end
 
+function mineAndGoRightMiddle()
+  turtle.digUp()
   goUpSafe()
   mineIfOreInFront()
-  turtle.digUp()
+end
 
+function mineAndGoRightTop()
+  turtle.digUp()
   goUpSafe()
   mineIfOreInFront()
   mineIfOreAbove()
+end
+
+function mineAndGoTopMiddle()
   turtle.turnLeft()
   turtle.turnLeft()
   turtle.dig()
-
   goForwardSafe()
   mineIfOreAbove()
-  turtle.dig()
+end
 
+function mineAndGoTopLeft()
+  turtle.dig()
   goForwardSafe()
   mineIfOreInFront()
   mineIfOreAbove()
+end
 
+function mineAndGoLeftMiddle()
   turtle.digDown()
-
   goDownSafe()
   mineIfOreInFront()
-  turtle.digDown()
+end
 
+function mineAndGoLeftBottom()
+  turtle.digDown()
   goDownSafe()
   mineIfOreInFront()
   mineIfOreBelow()
+end
+
+function goBackToBottomMiddle()
   turtle.turnRight()
   turtle.turnRight()
   goForwardSafe()
   turtle.turnLeft()
+end
+
+function MineTunnel:mine3x3()
+  mineAndGoBottomMiddle()
+  mineAndGoBottomRight()
+  mineAndGoRightMiddle()
+  mineAndGoRightTop()
+  mineAndGoTopMiddle()
+  mineAndGoTopLeft()
+  mineAndGoLeftMiddle()
+  mineAndGoLeftBottom()
+  goBackToBottomMiddle()
 end
 
 function goBackFor(numMoves)
@@ -411,6 +437,16 @@ function mineTunnelFor(argDigDistance)
   turtle.turnRight()
 end
 
+function inventoryFull()
+  local full = true
+  for i = 1,16 do
+    if turtle.getItemCount(i) == 0 then
+      full = false
+    end
+  end
+  return full
+end
+
 function throwOutTrash()
   for i = 3, 16 do
     local item = turtle.getItemDetail(i)
@@ -435,5 +471,7 @@ function throwOutTrash()
 end
 
 print("START")
-throwOutTrash()
+
 mineTunnelFor(argDigDistance)
+
+
