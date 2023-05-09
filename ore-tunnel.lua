@@ -51,9 +51,8 @@ function goBackSafe()
     turtle.turnRight()
     turtle.turnRight()
     turtle.dig()
-    goForwardSafe()
-    turtle.turnRight()
-    turtle.turnRight()
+    turtle.turnLeft()
+    turtle.turnLeft()
   end
 end
 
@@ -105,21 +104,9 @@ stepStore = StringList.new()
 -- --------------------------------------------------------------------------------------------------
 
 function stepBack()
-  print("Stepback: ", #stepStore.list)
   while #stepStore.list > 0 do
     local lastStep = stepStore.getLast()
 
-    if stepStore.getBeforeLastExists() then
-      local beforeLastStep = stepStore.getBeforeLast()
-      if lastStep == "R" and beforeLastStep == "L" then
-        lastStep = "SKIP"
-      end
-      if lastStep == "L" and beforeLastStep == "R" then
-        lastStep = "SKIP"
-      end
-    end
-
-    print("LastStep: ", lastStep)
     if lastStep == "F" then
       goForwardSafe()
       stepStore.removeLast()
@@ -194,7 +181,6 @@ function OreMiner:isOreFront()
 end
 
 function OreMiner:mineOre()
-  print("MineOre")
   local oreFront = OreMiner:isOreFront()
   local oreDown = OreMiner:isOreDown()
   local oreUp = OreMiner:isOreAbove()
@@ -354,8 +340,6 @@ function goBackFor(numMoves)
     goForwardSafe()
     i = i + 1
   end
-  turtle.turnRight()
-  turtle.turnRight()
 end
 
 function inspectUp()
@@ -373,17 +357,16 @@ function inspectUp()
   end
 end
 
-local miner = MineTunnel ("1,1,Black;")
-
 function mineTunnelFor(argDigDistance)
   local i = 1
   while i <= argDigDistance do
     miner:mine3x3()
     i = i + 1
   end
+  goBackFor(forwardSteps)
+
 end
 
 print("START")
 
 mineTunnelFor(argDigDistance)
-goBackFor(forwardSteps)
