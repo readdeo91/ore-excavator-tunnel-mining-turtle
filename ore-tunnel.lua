@@ -357,6 +357,42 @@ function inspectUp()
   end
 end
 
+function isChestAbove()
+  local success, data = turtle.inspectUp()
+  if success and string.find(data.name, "chest") ~= nil then
+    return true
+  else
+    return false
+  end
+end
+
+function isChestInFront()
+  local success, data = turtle.inspect()
+  if success and string.find(data.name, "chest") ~= nil then
+    return true
+  else
+    return false
+  end
+end
+
+local miner = MineTunnel ("1,1,Black;")
+
+function unLoad()
+  if isChestAbove() then
+    for inventorySlot = 1, 16 do
+      turtle.select(inventorySlot)
+      turtle.dropUp()
+    end
+  else  if isChestInFront() then
+    for inventorySlot = 1, 16 do
+      turtle.select(inventorySlot)
+      turtle.drop()
+    end
+  end
+end
+  turtle.select(1)
+end
+
 function mineTunnelFor(argDigDistance)
   local i = 1
   while i <= argDigDistance do
@@ -364,7 +400,9 @@ function mineTunnelFor(argDigDistance)
     i = i + 1
   end
   goBackFor(forwardSteps)
-
+  unLoad()
+  turtle.turnRight()
+  turtle.turnRight()
 end
 
 print("START")
