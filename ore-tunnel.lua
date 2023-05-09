@@ -8,6 +8,10 @@ local itemList = {
 args = {...}
 argDigDistance = tonumber(args[1])
 
+if argDigDistance == nil then
+  argDigDistance = 1
+end
+
 local forwardSteps = 0
 local stepStore = {}
 local oreMiner = {}
@@ -266,6 +270,20 @@ end
 
 setmetatable (MineTunnel, {__call=MineTunnel.__init__})
 
+function placeBlockDownForWalkWay()
+  if not turtle.detectDown() then
+    turtle.select(1)
+    turtle.placeDown()
+  end
+end
+
+function placeBlockInFrontForSide()
+  if not turtle.detect() then
+    turtle.select(1)
+    turtle.place()
+  end
+end
+
 function mineIfOreInFront()
   if OreMiner:isOreFront() then
     oreMiner:mineOre()
@@ -290,6 +308,7 @@ function mineAndGoBottomMiddle()
   forwardSteps = forwardSteps + 1
   mineIfOreBelow()
   turtle.digUp()
+  placeBlockDownForWalkWay()
 end
 
 function mineAndGoBottomRight()
@@ -298,6 +317,8 @@ function mineAndGoBottomRight()
   goForwardSafe()
   mineIfOreBelow()
   mineIfOreInFront()
+  placeBlockInFrontForSide()
+  placeBlockDownForWalkWay()
 end
 
 function mineAndGoRightMiddle()
@@ -339,6 +360,8 @@ function mineAndGoLeftBottom()
   goDownSafe()
   mineIfOreInFront()
   mineIfOreBelow()
+  placeBlockInFrontForSide()
+  placeBlockDownForWalkWay()
 end
 
 function goBackToBottomMiddle()
