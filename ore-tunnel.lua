@@ -5,7 +5,6 @@ local itemList = {
   ["sandstone"] = true
 }
 
-
 args = {...}
 argDigDistance = tonumber(args[1])
 
@@ -267,72 +266,68 @@ end
 
 setmetatable (MineTunnel, {__call=MineTunnel.__init__})
 
+function mineIfOreInFront()
+  if OreMiner:isOreFront() then
+    oreMiner:mineOre()
+  end
+end
+
+function mineIfOreBelow()
+  if OreMiner:isOreDown() then
+    oreMiner:mineOre()
+  end
+end
+
+function mineIfOreAbove()
+  if OreMiner:isOreAbove() then
+    oreMiner:mineOre()
+  end
+end
+
 function MineTunnel:mine3x3()
   turtle.dig()
   goForwardSafe()
   forwardSteps = forwardSteps + 1
-  if OreMiner:isOreDown() then
-    oreMiner:mineOre()
-  end
+  mineIfOreBelow()
   
   turtle.digUp()
-  
   
   turtle.turnRight()
   turtle.dig()
 
   goForwardSafe()
+  mineIfOreBelow()
   turtle.digUp()
-  if OreMiner:isOreFront() then
-    oreMiner:mineOre()
-  end
+  mineIfOreInFront()
 
   goUpSafe()
-  if OreMiner:isOreFront() then
-    oreMiner:mineOre()
-  end
+  mineIfOreInFront()
   turtle.digUp()
 
   goUpSafe()
-  if OreMiner:isOreFront() then
-    oreMiner:mineOre()
-  end
-  if OreMiner:isOreAbove() then
-    oreMiner:mineOre()
-  end
+  mineIfOreInFront()
+  mineIfOreAbove()
   turtle.turnLeft()
   turtle.turnLeft()
   turtle.dig()
 
   goForwardSafe()
-  if OreMiner:isOreAbove() then
-    oreMiner:mineOre()
-  end
+  mineIfOreAbove()
   turtle.dig()
 
   goForwardSafe()
-  if OreMiner:isOreFront() then
-    oreMiner:mineOre()
-  end
-  if OreMiner:isOreAbove() then
-    oreMiner:mineOre()
-  end
+  mineIfOreInFront()
+  mineIfOreAbove()
 
   turtle.digDown()
 
   goDownSafe()
-  if OreMiner:isOreFront() then
-    oreMiner:mineOre()
-  end
+  mineIfOreInFront()
   turtle.digDown()
 
   goDownSafe()
-  if OreMiner:isOreFront() then
-    oreMiner:mineOre()
-  end
-  if OreMiner:isOreDown() then
-    oreMiner:mineOre()
-  end
+  mineIfOreInFront()
+  mineIfOreBelow()
   turtle.turnRight()
   turtle.turnRight()
   goForwardSafe()
@@ -415,8 +410,6 @@ function mineTunnelFor(argDigDistance)
   turtle.turnRight()
   turtle.turnRight()
 end
-
-
 
 function throwOutTrash()
   for i = 3, 16 do
