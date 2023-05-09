@@ -17,6 +17,14 @@ local stepStore = {}
 local oreMiner = {}
 local findOres = 1
 
+local up = 0
+local side = 0
+
+local sideBkp = 0
+local upBkp = 0
+local direction = 0
+local invFull = false
+
 -- --------------------------------------------------------------------------------------------------
 
 function goForwardAndLog()
@@ -71,12 +79,14 @@ function goUpSafe()
   while not turtle.up() do
     turtle.digUp()
   end
+  up = up + 1
 end
 
 function goDownSafe()
   while not turtle.down() do
     turtle.digDown()
   end
+  up = up - 1
 end
 
 -- --------------------------------------------------------------------------------------------------
@@ -302,6 +312,8 @@ function mineIfOreAbove()
   end
 end
 
+
+
 function mineAndGoBottomMiddle()
   turtle.dig()
   goForwardSafe()
@@ -309,22 +321,27 @@ function mineAndGoBottomMiddle()
   mineIfOreBelow()
   turtle.digUp()
   placeBlockDownForWalkWay()
+  invFull = inventoryFull()
 end
 
 function mineAndGoBottomRight()
   turtle.turnRight()
+  direction = direction + 1
   turtle.dig()
   goForwardSafe()
+  side = side + 1
   mineIfOreBelow()
   mineIfOreInFront()
   placeBlockInFrontForSide()
   placeBlockDownForWalkWay()
+  invFull = inventoryFull()
 end
 
 function mineAndGoRightMiddle()
   turtle.digUp()
   goUpSafe()
   mineIfOreInFront()
+  invFull = inventoryFull()
 end
 
 function mineAndGoRightTop()
@@ -332,27 +349,35 @@ function mineAndGoRightTop()
   goUpSafe()
   mineIfOreInFront()
   mineIfOreAbove()
+  invFull = inventoryFull()
 end
 
 function mineAndGoTopMiddle()
   turtle.turnLeft()
+  direction = direction - 1
   turtle.turnLeft()
+  direction = direction - 1
   turtle.dig()
   goForwardSafe()
+  side = side - 1
   mineIfOreAbove()
+  invFull = inventoryFull()
 end
 
 function mineAndGoTopLeft()
   turtle.dig()
   goForwardSafe()
+  side = side - 1
   mineIfOreInFront()
   mineIfOreAbove()
+  invFull = inventoryFull()
 end
 
 function mineAndGoLeftMiddle()
   turtle.digDown()
   goDownSafe()
   mineIfOreInFront()
+  invFull = inventoryFull()
 end
 
 function mineAndGoLeftBottom()
@@ -362,25 +387,69 @@ function mineAndGoLeftBottom()
   mineIfOreBelow()
   placeBlockInFrontForSide()
   placeBlockDownForWalkWay()
+  invFull = inventoryFull()
 end
 
-function goBackToBottomMiddle()
+function goToToBottomMiddle()
   turtle.turnRight()
+  direction = direction + 1
   turtle.turnRight()
+  direction = direction + 1
   goForwardSafe()
+  side = side + 1
   turtle.turnLeft()
+  direction = direction - 1
+  invFull = inventoryFull()
+end
+
+
+function unloadIfFull()
+  print("inventoryFull",invFull)
+  if invFull then
+    goBackToBottomMiddle()
+    goBackFor(forwardSteps)
+    unLoad()
+    goBackFor(forwardSteps)
+  end
 end
 
 function MineTunnel:mine3x3()
   mineAndGoBottomMiddle()
+  if invFull then
+    return
+  end
   mineAndGoBottomRight()
+  if invFull then
+    return
+  end
   mineAndGoRightMiddle()
+  if invFull then
+    return
+  end
   mineAndGoRightTop()
+  if invFull then
+    return
+  end
   mineAndGoTopMiddle()
+  if invFull then
+    return
+  end
   mineAndGoTopLeft()
+  if invFull then
+    return
+  end
   mineAndGoLeftMiddle()
+  if invFull then
+    return
+  end
   mineAndGoLeftBottom()
-  goBackToBottomMiddle()
+  if invFull then
+    return
+  end
+  goToToBottomMiddle()
+  if invFull then
+    return
+  end
 end
 
 function goBackFor(numMoves)
@@ -395,16 +464,12 @@ function goBackFor(numMoves)
 end
 
 function inspectUp()
-  -- Call turtle.inspectUp() and store the result in a variable
   local success, data = turtle.inspectUp()
 
-  -- Check if the call was successful
   if success then
-    -- If successful, print the block details
     print("Block above: ", data.name)
     print("Metadata: ", data.metadata)
   else
-    -- If unsuccessful, print an error message
     print("Error inspecting block above!")
   end
 end
@@ -430,18 +495,26 @@ end
 local miner = MineTunnel ("1,1,Black;")
 
 function unLoad()
+  local chestInFront = isChestInFront()
+  local chestAbove = isChestAbove()
+  while not chestInFront and not chestAbove do
+    print("Waiting for chest to unload")
+    sleep(100)
+    chestInFront = isChestInFront()
+    chestAbove = isChestAbove()
+  end
+
   if isChestAbove() then
     for inventorySlot = 3, 16 do
       turtle.select(inventorySlot)
       turtle.dropUp()
     end
-  else  if isChestInFront() then
+  elseif isChestInFront() then
     for inventorySlot = 1, 16 do
       turtle.select(inventorySlot)
       turtle.drop()
     end
   end
-end
   turtle.select(1)
 end
 
@@ -449,6 +522,10 @@ function mineTunnelFor(argDigDistance)
   local i = 1
   while i <= argDigDistance do
     miner:mine3x3()
+    if invFull then
+      unloadIfFull()
+      argDigDistance = argDigDistance + 1
+    end
     if i % 2 == 0 then
       throwOutTrash()
     end
@@ -457,7 +534,9 @@ function mineTunnelFor(argDigDistance)
   goBackFor(forwardSteps)
   unLoad()
   turtle.turnRight()
+  direction = direction + 1
   turtle.turnRight()
+  direction = direction + 1
 end
 
 function inventoryFull()
@@ -476,8 +555,7 @@ function throwOutTrash()
     if item then
       local itemName = item.name
       local itemNameMatched = false
-      
-      -- Check if the item name matches any of the strings in the item list
+    
       for item_, itemNameMatch in pairs(itemList) do
         if string.find(itemName, item_) then
           itemNameMatched = true
@@ -493,8 +571,45 @@ function throwOutTrash()
   end
 end
 
+function goBackToBottomMiddle()
+  if direction == 0 then
+  elseif direction < 0 then
+    for i = -1, direction do
+      turtle.turnRight()
+      direction = direction + 1
+    end
+  elseif direction > 0 then
+    for i = 1, direction do
+      turtle.turnLeft()
+      direction = direction - 1
+    end
+  end
+
+  sideBkp = side
+  upBkp = up
+  for i = 1, up do
+    goDownSafe()
+  end
+
+  if side == 0 then
+    side = side
+  elseif side < 0 then
+    turtle.turnRight()
+    for i = -1, side do
+      side = side + 1
+      goForwardSafe()
+    end
+    turtle.turnLeft()
+  else
+    turtle.turnLeft()
+    for i = 1, side do
+      side = side -1
+      goForwardSafe()
+    end
+    turtle.turnRight()
+  end
+end
+
 print("START")
 
 mineTunnelFor(argDigDistance)
-
-
