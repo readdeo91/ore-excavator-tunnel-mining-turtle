@@ -1,3 +1,11 @@
+local itemList = {
+  ["dirt"] = true,
+  ["cobblestone"] = true,
+  ["gravel"] = true,
+  ["sandstone"] = true
+}
+
+
 args = {...}
 argDigDistance = tonumber(args[1])
 
@@ -379,7 +387,7 @@ local miner = MineTunnel ("1,1,Black;")
 
 function unLoad()
   if isChestAbove() then
-    for inventorySlot = 1, 16 do
+    for inventorySlot = 3, 16 do
       turtle.select(inventorySlot)
       turtle.dropUp()
     end
@@ -397,6 +405,9 @@ function mineTunnelFor(argDigDistance)
   local i = 1
   while i <= argDigDistance do
     miner:mine3x3()
+    if i % 2 == 0 then
+      throwOutTrash()
+    end
     i = i + 1
   end
   goBackFor(forwardSteps)
@@ -405,6 +416,31 @@ function mineTunnelFor(argDigDistance)
   turtle.turnRight()
 end
 
-print("START")
 
+
+function throwOutTrash()
+  for i = 3, 16 do
+    local item = turtle.getItemDetail(i)
+    if item then
+      local itemName = item.name
+      local itemNameMatched = false
+      
+      -- Check if the item name matches any of the strings in the item list
+      for item_, itemNameMatch in pairs(itemList) do
+        if string.find(itemName, item_) then
+          itemNameMatched = true
+          break
+        end
+      end
+      
+      if itemNameMatched then
+        turtle.select(i)
+        turtle.drop()
+      end
+    end
+  end
+end
+
+print("START")
+throwOutTrash()
 mineTunnelFor(argDigDistance)
