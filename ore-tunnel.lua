@@ -504,15 +504,26 @@ function unLoad()
     chestAbove = isChestAbove()
   end
 
+  local dropSuccess = true
   if isChestAbove() then
     for inventorySlot = 3, 16 do
       turtle.select(inventorySlot)
-      turtle.dropUp()
+      dropSuccess = turtle.dropUp()
+      while not dropSuccess do
+        print("Chest full above, can't unload!")
+        sleep(5)
+        dropSuccess = turtle.dropUp()
+      end
     end
   elseif isChestInFront() then
     for inventorySlot = 1, 16 do
       turtle.select(inventorySlot)
-      turtle.drop()
+      dropSuccess = turtle.drop()
+      while not dropSuccess do
+        print("Chest full in front, can't unload!")
+        sleep(5)
+        dropSuccess = turtle.dropUp()
+      end
     end
   end
   turtle.select(1)
