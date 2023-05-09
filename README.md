@@ -8,6 +8,7 @@ I didn't like the idea to excavate large areas to find resources. The main purpo
 - Falling block proof
 - Returns to the starting point
 - Unloads inventory when returned. Chest must be behind or above the starting point.
+- Throws out trash every second turn
 
 ### Planned features:
 - Refuel from lava before moving into it
