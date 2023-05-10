@@ -17,6 +17,7 @@ I didn't like the idea to excavate large areas to find resources. The main purpo
 - Slot 2 for empty buckets
 
 ### Planned features:
+- Place torches
 - Refuel from lava before moving into it
 - Make a wall to prevents liquids flowing in
 - Refuel from lava before placing a block on it
