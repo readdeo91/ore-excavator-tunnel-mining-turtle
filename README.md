@@ -23,6 +23,7 @@ I didn't like the idea to excavate large areas to find resources. The main purpo
 - Refuel from lava before placing a block on it
 - Optionally collect lava with buckets **(slot 2 reserved for buckets)**
 - Branching
+- Fuel efficient branching. The turtle should make a branch from the tunnel, then go further and get back in a new branch.
 
 
 This was a proof of concept job. Heavy refactoring and optimization is needed. The turtle currently moves around a lot when it looks for ore. Especially on the way back to continue tunneling.
