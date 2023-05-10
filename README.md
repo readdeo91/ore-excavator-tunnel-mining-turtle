@@ -24,3 +24,4 @@ This was a proof of concept job. Also heavy refactoring and optimization is need
 ### Known issues
 - Unloading the inventory is stuck when there is an empty slot
 - When waiting for an inventory to drop items, only checking the front or above block. It needs to be changed for alternate checking while waiting.
+- When the turtle is coming back, it destroys chests if it was placed in it's path
